@@ -43,6 +43,14 @@ public class UserController {
             model.addAttribute("msg", "用户名或密码不能为空");
             return "login";
         }
+        if (username.length() > 10 || username.length() < 3) {
+            model.addAttribute("msg", "用户名长度必须在3~10之间");
+            return "login";
+        }
+        if (password.length() > 16 || password.length() < 8) {
+            model.addAttribute("msg", "密码长度必须在8~16之间");
+            return "login";
+        }
         try {
             subject.login(new UsernamePasswordToken(username, password));
         } catch (UnknownAccountException e) {
@@ -80,6 +88,7 @@ public class UserController {
     public String doPostRegister(User user, Model model) {
         Subject subject = SecurityUtils.getSubject();
         String username = user.getUsername();
+        String password = user.getPassword();
         if (subject.isAuthenticated()) {
             return "redirect:/";
         }
@@ -87,9 +96,17 @@ public class UserController {
             model.addAttribute("msg", "用户名不能为空");
             return "register";
         }
-        if ("".equals(user.getPassword())) {
+        if ("".equals(password)) {
             model.addAttribute("msg", "密码不能为空");
             return "register";
+        }
+        if (username.length() > 10 || username.length() < 3) {
+            model.addAttribute("msg", "用户名长度必须在3~10之间");
+            return "login";
+        }
+        if (password.length() > 16 || password.length() < 8) {
+            model.addAttribute("msg", "密码长度必须在8~16之间");
+            return "login";
         }
         User userSaved = userService.register(user);
         if (userSaved != null) {
