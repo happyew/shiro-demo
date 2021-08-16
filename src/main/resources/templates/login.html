@@ -22,12 +22,16 @@
 <div th:if="${users!=null&&users.size()>0}">
     <table>
         <tr>
+            <th>序号</th>
             <th>用户名</th>
             <th>密码</th>
+            <th>盐</th>
         </tr>
         <tr th:each="user:${users}">
+            <th th:text="${user.id}"></th>
             <th th:text="${user.username}"></th>
             <th th:text="${user.password}"></th>
+            <th th:text="${user.salt}"></th>
         </tr>
     </table>
 </div>

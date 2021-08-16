@@ -43,8 +43,8 @@ public class UserController {
             model.addAttribute("msg", "用户名或密码不能为空");
             return "login";
         }
-        if (username.length() > 10 || username.length() < 3) {
-            model.addAttribute("msg", "用户名长度必须在3~10之间");
+        if (username.length() > 10 || username.length() < 2) {
+            model.addAttribute("msg", "用户名长度必须在2~10之间");
             return "login";
         }
         if (password.length() > 16 || password.length() < 8) {
@@ -53,6 +53,7 @@ public class UserController {
         }
         try {
             subject.login(new UsernamePasswordToken(username, password));
+            return "redirect:/";
         } catch (UnknownAccountException e) {
             e.printStackTrace();
             model.addAttribute("msg", "该用户不存在");
@@ -62,7 +63,6 @@ public class UserController {
             model.addAttribute("msg", "密码错误");
             return "login";
         }
-        return "redirect:/";
     }
 
     @GetMapping("/logout")
@@ -100,8 +100,8 @@ public class UserController {
             model.addAttribute("msg", "密码不能为空");
             return "register";
         }
-        if (username.length() > 10 || username.length() < 3) {
-            model.addAttribute("msg", "用户名长度必须在3~10之间");
+        if (username.length() > 10 || username.length() < 2) {
+            model.addAttribute("msg", "用户名长度必须在2~10之间");
             return "login";
         }
         if (password.length() > 16 || password.length() < 8) {
@@ -112,6 +112,7 @@ public class UserController {
         if (userSaved != null) {
             return "redirect:/login";
         }
+        model.addAttribute("msg", "该用户名已存在");
         return "register";
     }
 }

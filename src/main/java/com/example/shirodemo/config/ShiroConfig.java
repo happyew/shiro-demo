@@ -42,7 +42,7 @@ public class ShiroConfig {
     public Realm getRealm() {
         CustomRealm realm = new CustomRealm();
         HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
-        credentialsMatcher.setHashAlgorithmName("MD5");
+        credentialsMatcher.setHashAlgorithmName("md5");
         credentialsMatcher.setHashIterations(1024);
         realm.setCredentialsMatcher(credentialsMatcher);
         return realm;
