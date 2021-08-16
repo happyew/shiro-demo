@@ -11,16 +11,12 @@ import java.util.*;
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class User {
+public class Permit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String username;
-    private String password;
-    private String salt;
-    @ManyToMany(targetEntity = Role.class, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_role", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    private Integer id;
+    private String name;
+    @ManyToMany(mappedBy = "permits")
     @ToString.Exclude
     private List<Role> roles = new ArrayList<>();
 
@@ -28,13 +24,13 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        User user = (User) o;
+        Permit permit = (Permit) o;
 
-        return Objects.equals(id, user.id);
+        return Objects.equals(id, permit.id);
     }
 
     @Override
     public int hashCode() {
-        return 562048007;
+        return 472948627;
     }
 }
