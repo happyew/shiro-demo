@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+</head>
+<body>
+<h2>Hello <span th:text="${msg!=null?msg:'World'}"></span></h2>
+<a href="/logout">退出</a>
+</body>
+</html>
