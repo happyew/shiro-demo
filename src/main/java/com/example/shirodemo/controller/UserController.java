@@ -38,9 +38,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String doPostLogin(User user, String code, Model model,HttpSession session) {
+    public String doPostLogin(User user, String code, Model model, HttpSession session) {
         ShearCaptcha captcha = (ShearCaptcha) session.getAttribute("captcha");
-        if (!captcha.verify(code)) {
+        if (captcha != null && !captcha.verify(code)) {
             session.removeAttribute("captcha");
             model.addAttribute("msg", "验证码错误");
             return "login";
