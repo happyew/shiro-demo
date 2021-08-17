@@ -2,12 +2,14 @@ package com.example.shirodemo.controller;
 
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.ShearCaptcha;
+import cn.hutool.core.util.StrUtil;
 import com.example.shirodemo.entity.User;
 import com.example.shirodemo.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -51,8 +53,12 @@ public class UserController {
         }
         String username = user.getUsername();
         String password = user.getPassword();
-        if ("".equals(username) || "".equals(password)) {
-            model.addAttribute("msg", "用户名或密码不能为空");
+        if (StrUtil.hasEmpty(username) || StrUtil.hasBlank(username)) {
+            model.addAttribute("msg", "用户名不能为空，不能有空格");
+            return "login";
+        }
+        if (StrUtil.hasEmpty(password) || StrUtil.hasBlank(password)) {
+            model.addAttribute("msg", "密码不能为空，不能有空格");
             return "login";
         }
         try {
@@ -91,7 +97,7 @@ public class UserController {
     @PostMapping("/register")
     public String doPostRegister(User user, String code, Model model, HttpSession session) {
         ShearCaptcha captcha = (ShearCaptcha) session.getAttribute("captcha");
-        if (!captcha.verify(code)) {
+        if (captcha != null && !captcha.verify(code)) {
             session.removeAttribute("captcha");
             model.addAttribute("msg", "验证码错误");
             return "register";
@@ -102,13 +108,13 @@ public class UserController {
         if (subject.isAuthenticated()) {
             return "redirect:/";
         }
-        if ("".equals(username)) {
-            model.addAttribute("msg", "用户名不能为空");
-            return "register";
+        if (StrUtil.hasEmpty(username) || StrUtil.hasBlank(username)) {
+            model.addAttribute("msg", "用户名不能为空，不能有空格");
+            return "login";
         }
-        if ("".equals(password)) {
-            model.addAttribute("msg", "密码不能为空");
-            return "register";
+        if (StrUtil.hasEmpty(password) || StrUtil.hasBlank(password)) {
+            model.addAttribute("msg", "密码不能为空，不能有空格");
+            return "login";
         }
         User userSaved = userService.register(user);
         if (userSaved != null) {
