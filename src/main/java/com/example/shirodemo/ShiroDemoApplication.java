@@ -1,7 +1,7 @@
 package com.example.shirodemo;
 
-import com.example.shirodemo.dao.RoleRepository;
 import com.example.shirodemo.dao.UserRepository;
+import com.example.shirodemo.entity.Permit;
 import com.example.shirodemo.entity.Role;
 import com.example.shirodemo.entity.User;
 import com.example.shirodemo.util.SaltUtil;
@@ -11,9 +11,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @SpringBootApplication
 public class ShiroDemoApplication {
@@ -36,6 +34,19 @@ public class ShiroDemoApplication {
             userRole.setName("user");
             adminRole.getUsers().add(adminUser);
             userRole.getUsers().add(adminUser);
+
+            Permit create = new Permit();
+            create.setName("create");
+
+            Permit update = new Permit();
+            update.setName("update");
+
+            adminRole.getPermits().add(create);
+            adminRole.getPermits().add(update);
+            userRole.getPermits().add(update);
+            create.getRoles().add(adminRole);
+            update.getRoles().add(userRole);
+            update.getRoles().add(adminRole);
 
             List<Role> roles = adminUser.getRoles();
             roles.add(adminRole);

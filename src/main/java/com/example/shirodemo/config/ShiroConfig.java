@@ -23,6 +23,8 @@ public class ShiroConfig {
         map.put("/login", "anon");
         map.put("/logout", "anon");
         map.put("/register", "anon");
+        map.put("/captcha/**", "anon");
+        map.put("/js/**", "anon");
         map.put("/**", "authc");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
         shiroFilterFactoryBean.setLoginUrl("/login");

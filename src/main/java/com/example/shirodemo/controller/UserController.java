@@ -1,5 +1,7 @@
 package com.example.shirodemo.controller;
 
+import cn.hutool.captcha.CaptchaUtil;
+import cn.hutool.captcha.ShearCaptcha;
 import com.example.shirodemo.entity.User;
 import com.example.shirodemo.service.UserService;
 import org.apache.shiro.SecurityUtils;
@@ -13,6 +15,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -32,7 +38,13 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String doPostLogin(User user, Model model) {
+    public String doPostLogin(User user, String code, Model model,HttpSession session) {
+        ShearCaptcha captcha = (ShearCaptcha) session.getAttribute("captcha");
+        if (!captcha.verify(code)) {
+            session.removeAttribute("captcha");
+            model.addAttribute("msg", "验证码错误");
+            return "login";
+        }
         Subject subject = SecurityUtils.getSubject();
         if (subject.isAuthenticated()) {
             return "redirect:/";
@@ -77,7 +89,13 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String doPostRegister(User user, Model model) {
+    public String doPostRegister(User user, String code, Model model, HttpSession session) {
+        ShearCaptcha captcha = (ShearCaptcha) session.getAttribute("captcha");
+        if (!captcha.verify(code)) {
+            session.removeAttribute("captcha");
+            model.addAttribute("msg", "验证码错误");
+            return "register";
+        }
         Subject subject = SecurityUtils.getSubject();
         String username = user.getUsername();
         String password = user.getPassword();
@@ -98,5 +116,17 @@ public class UserController {
         }
         model.addAttribute("msg", "该用户名已存在");
         return "register";
+    }
+
+    @GetMapping("/captcha/**")
+    public void captcha(HttpSession session, HttpServletResponse response) {
+        ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(200, 100, 4, 4);
+        try (ServletOutputStream outputStream = response.getOutputStream()) {
+            session.setAttribute("captcha", captcha);
+            response.setContentType("image/png");
+            captcha.write(outputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
